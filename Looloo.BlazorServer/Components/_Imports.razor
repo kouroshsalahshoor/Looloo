@@ -1,5 +1,6 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
+@using Looloo.BlazorServer.Data
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
@@ -9,3 +10,9 @@
 @using Microsoft.JSInterop
 @using Looloo.BlazorServer
 @using Looloo.BlazorServer.Components
+
+@using Looloo.BlazorServer.Models
+
+@using Microsoft.EntityFrameworkCore
+
+@inherits OwningComponentBase<ApplicationDbContext>

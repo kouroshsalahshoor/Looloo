@@ -1,0 +1,121 @@
+﻿@page "/category/create"
+@page "/category/update/{id:int}"
+
+@attribute [StreamRendering]
+
+<PageTitle>@_title Category</PageTitle>
+
+<h1>@_title Category</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        @if (_loading)
+        {
+            <_Loading />
+        }
+        else
+        {
+            <EditForm method="post" Model="_model" OnValidSubmit="save" FormName="createUpdate" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary class="text-danger" role="alert" />
+                <AntiforgeryToken />
+
+                <_Error Message="@_errorMessage" />
+
+                <div class="mb-3">
+                    <label for="id" class="form-label">Id</label>
+                    <input id="id" value="@_model.Id" class="form-control" disabled />
+                </div>
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <InputText id="name" @bind-Value="_model.Name" class="form-control" />
+                    <ValidationMessage For="() => _model.Name" class="text-danger" />
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-@(_title == "Create" ? "primary" : "warning")" disabled="@_saving">@_title</button>
+                    <a class="btn btn-light px-3" href="/categories">Back to Index</a>
+                </div>
+            </EditForm>
+        }
+    </div>
+</div>
+
+@code {
+    public ApplicationDbContext _db => Service;
+    
+    private bool _loading = true;
+    private bool _saving = false;
+    private string _title = string.Empty;
+    private string _errorMessage = string.Empty;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Category? _model { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _loading = true;
+        StateHasChanged();
+
+        if (Id == 0)
+        {
+            _title = "Create";
+        }
+        else
+        {
+            _title = "Update";
+
+            _model = await _db.Categories.FindAsync(Id);
+            if (_model is null)
+            {
+                await _js.ToastrError("Item not found!");
+            }
+        }
+
+        _loading = false;
+        StateHasChanged();
+    }
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task save()
+    {
+        _errorMessage = string.Empty;
+        _saving = true;
+        StateHasChanged();
+
+        // await Task.Delay(3000);
+
+        var modelInDb = await _db.Categories.SingleOrDefaultAsync(x=> x.Name == _model!.Name)!;
+        if (modelInDb is not null && Id != modelInDb.Id)
+        {
+            _errorMessage = $"An item with the same name: {_model!.Name} already exists.";
+        }
+        else
+        {
+            if (Id == 0)
+            {
+                await _db.Categories.AddAsync(_model!);
+                await _db.SaveChangesAsync();
+                await _js.ToastrSuccess("Created");
+            }
+            else
+            {
+                modelInDb!.Name = _model!.Name;
+
+                _db.Categories.Update(modelInDb);
+                await _db.SaveChangesAsync();
+                await _js.ToastrSuccess("Updated");
+            }
+
+            _navigationManager.NavigateTo("/categories");
+        }
+
+        _saving = false;
+        StateHasChanged();
+    }
+}

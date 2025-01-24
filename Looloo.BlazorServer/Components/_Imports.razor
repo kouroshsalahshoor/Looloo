@@ -12,7 +12,12 @@
 @using Looloo.BlazorServer.Components
 
 @using Looloo.BlazorServer.Models
+@using Looloo.BlazorServer.Components.Shared
+@using Looloo.BlazorServer.Utilities
 
 @using Microsoft.EntityFrameworkCore
 
 @inherits OwningComponentBase<ApplicationDbContext>
+
+@inject IJSRuntime _js
+@inject NavigationManager _navigationManager

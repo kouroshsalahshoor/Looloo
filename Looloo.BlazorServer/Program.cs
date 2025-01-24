@@ -1,6 +1,7 @@
 using Looloo.BlazorServer.Components;
 using Looloo.BlazorServer.Components.Account;
 using Looloo.BlazorServer.Data;
+using Looloo.BlazorServer.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -62,6 +63,9 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+builder.Services.AddScoped<IcaService>();
+builder.Services.AddScoped<CoopService>();
 
 var app = builder.Build();
 

@@ -1,0 +1,88 @@
+﻿@page "/search"
+
+@inject CoopService _coopService
+@inject IcaService _icaService
+
+<PageTitle>@_title</PageTitle>
+<h5 class="bg-primary text-white text-center p-2">@_title</h5>
+
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Search" aria-label="Recipient's username" aria-describedby="button-addon2"
+           @bind-value="_searchTerm" @bind-value:event="oninput">
+    <button class="btn btn-warning text-light" type="button" id="button-addon2" @onclick="search" disabled="@(string.IsNullOrEmpty(_searchTerm) || _loading)">
+        <i class="bi bi-search"></i> 
+        @if (_loading)
+        {
+            <div class="spinner-border text-primary spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        }
+        Search
+    </button>
+</div>
+
+<table class="table table-sm table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Size</th>
+            <th>SizePrice</th>
+            <th>Company</th>
+            @* <th class="text-center" style="width:180px;">
+                <NavLink class="btn btn-sm btn-primary" href="/person/create">Create</NavLink>
+            </th> *@
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in _items)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Title</td>
+                <td>@item.Price</td>
+                <td>@item.Size</td>
+                <td>@item.SizePrice</td>
+                <td>@item.Company</td>
+                @* <td class="text-center">
+                        <NavLink class="btn btn-sm btn-info" href="@GetDetailsUrl(item.Id)">Details</NavLink>
+                        <NavLink class="btn btn-sm btn-warning" href="@GetEditUrl(item.Id)">Edit</NavLink>
+                        <button class="btn btn-sm btn-danger" @onclick="@(() => HandleDelete(item))">Delete</button>
+                    </td> *@
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private string _title = "Search";
+    private string? _searchTerm = "ägg";
+    private bool _loading = false;
+    // private string? _searchTerm = string.Empty;
+    private List<ProductViewModel> _items = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // var categories = await _icaService.GetCategories();
+    }
+
+    private async Task search()
+    {
+        _loading = true;
+
+        await Task.Run(async () =>
+        {
+            if (string.IsNullOrEmpty(_searchTerm) == false)
+            {
+                var icaProducts = await _icaService.Search(_searchTerm);
+                var coopProducts = await _coopService.Search(_searchTerm);
+
+                _items = icaProducts.Concat(coopProducts).ToList();
+            }
+
+            _loading = false;
+        });
+        
+    }
+}

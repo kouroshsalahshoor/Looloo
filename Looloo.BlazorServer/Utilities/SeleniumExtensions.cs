@@ -4,7 +4,7 @@ namespace Looloo.BlazorServer.Utilities
 {
     public class SeleniumExtensions
     {
-        public static IWebElement? findElement(IWebElement element, string cssSelector)
+        public static IWebElement? findElementByCss(IWebElement element, string cssSelector)
         {
             try
             {

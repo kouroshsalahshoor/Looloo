@@ -2,11 +2,11 @@
 using Looloo.BlazorServer.Utilities;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 
 namespace Looloo.BlazorServer.Services
 {
-    //public class CoopService : IDisposable
-    public class CoopService
+    public class WillysService
     {
         private ChromeDriver? _driver;
 
@@ -17,35 +17,54 @@ namespace Looloo.BlazorServer.Services
             _driver = new ChromeDriver(options);
             //_driver = _driver ?? new ChromeDriver();
 
-            _driver.Navigate().GoToUrl($"https://www.coop.se/handla/sok/?q={searchTerm.Trim()}");
-            //_driver.Url = $"https://www.coop.se/handla/sok/?q={searchTerm.Trim()}";
+            _driver.Navigate().GoToUrl($"https://www.willys.se/sok?q={searchTerm.Trim()}");
+            //_driver!.Url = $"https://www.willys.se/sok?q={searchTerm.Trim()}";
             closeCookieWindow();
+
+            //https://www.selenium.dev/documentation/webdriver/waits/
+            //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(500);
+
+            //WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
+            //wait.Until(d => revealed.Displayed);
+
+            //WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2))
+            //{
+            //    PollingInterval = TimeSpan.FromMilliseconds(300),
+            //};
+            //wait.IgnoreExceptionTypes(typeof(ElementNotInteractableException));
+
+            //wait.Until(d => {
+            //    revealed.SendKeys("Displayed");
+            //    return true;
+            //});
 
             var result = new List<ProductViewModel>();
 
-            var elements = _driver.FindElements(By.CssSelector("div.ProductTeaser-info"));
+            //https://www.selenium.dev/documentation/webdriver/elements/locators/
+            //var elements = _driver.FindElements(By.CssSelector("#__next > div > div.sc-504002c3-3.ePiOKs > main > section > div > div.infinite-scroll-component__outerdiv > div > div > div"));
+            var elements = _driver.FindElements(By.XPath("//*[@id=\"__next\"]/div/div[4]/main/section/div/div[4]/div/div/div"));
+            //var elements = _driver.FindElements(By.CssSelector("div.ProductTeaser-info"));
             if (elements is not null)
             {
-
                 foreach (var element in elements)
                 {
-                    var title = SeleniumExtensions.findElementByCss(element, "div.ProductTeaser-headingContainer > p > a");
-                    var price = SeleniumExtensions.findElementByCss(element, "div.ProductTeaser-detailsContainer > div.SnZ2rtnf.sJx8F6kR.ProductTeaser-pricesContainer > span > span:nth-child(1)");
-                    var size = SeleniumExtensions.findElementByCss(element, "div.ProductTeaser-headingContainer > div > div");
-                    var sizePrice = SeleniumExtensions.findElementByCss(element, "div.ProductTeaser-detailsContainer > div.ProductTeaser-details > div:nth-child(2)");
+                    var title = SeleniumExtensions.findElementByCss(element, "div.sc-7fa12c71-6.gMsSQO");
+                    var price = SeleniumExtensions.findElementByCss(element, "span.sc-49402b38-2.gjPFeg");
+                    var size = SeleniumExtensions.findElementByCss(element, "div.sc-7fa12c71-7.hzKTNx > span");
+                    var sizePrice = SeleniumExtensions.findElementByCss(element, "div.sc-7fa12c71-5.dbJhzZ > div");
 
                     //price = price.Replace("kr", "").Replace(",", ".").Trim();
                     //sizePrice = sizePrice.Replace("(", "").Replace(")", "").Replace(",", ".").Trim();
 
                     result.Add(new ProductViewModel
                     {
-                        Title = title == null ? string.Empty : title.GetAttribute("text"),
+                        Title = title == null ? string.Empty : title.Text,
                         Price = price == null ? string.Empty : price.Text,
                         //Price = decimal.Parse(price),
                         Size = size == null ? string.Empty : size.Text,
                         SizePrice = sizePrice == null ? string.Empty : sizePrice.Text,
                         //SizePrice = decimal.Parse(sizePrice),
-                        Company = "Coop",
+                        Company = "Willys",
                     });
                 }
 
@@ -90,9 +109,13 @@ namespace Looloo.BlazorServer.Services
         {
             try
             {
+                //Thread.Sleep(1000);
+                // Maximize the current window
+                //_driver?.Manage().Window.Maximize();
+
                 Thread.Sleep(1000);
 
-                var cookieButton = _driver?.FindElement(By.XPath(".//a[contains(@class, 'cmpboxbtn cmpboxbtnyes cmptxt_btn_yes')]"));
+                var cookieButton = _driver?.FindElement(By.XPath("//*[@id=\"onetrust-accept-btn-handler\"]"));
                 if (cookieButton is not null)
                 {
                     cookieButton.Click();
@@ -110,13 +133,5 @@ namespace Looloo.BlazorServer.Services
             {
             }
         }
-
-        //public void Dispose()
-        //{
-        //    if (_driver is not null)
-        //    {
-        //        _driver?.Quit();
-        //    }
-        //}
     }
 }

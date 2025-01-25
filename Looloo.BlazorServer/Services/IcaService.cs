@@ -36,9 +36,13 @@ namespace Looloo.BlazorServer.Services
 
         public async Task<List<ProductViewModel>> Search(string searchTerm)
         {
-            _driver = _driver ?? new ChromeDriver();
+            ChromeOptions options = new ChromeOptions();
+            options.AddArgument("--headless");
+            _driver = new ChromeDriver(options);
+            //_driver = _driver ?? new ChromeDriver();
 
-            _driver.Url = $"https://handlaprivatkund.ica.se/stores/1003988/search?q={searchTerm.Trim()}";
+            _driver.Navigate().GoToUrl($"https://handlaprivatkund.ica.se/stores/1003988/search?q={searchTerm.Trim()}");
+            //_driver.Url = $"https://handlaprivatkund.ica.se/stores/1003988/search?q={searchTerm.Trim()}";
             closeCookieWindow();
 
             var result = new List<ProductViewModel>();
@@ -48,17 +52,17 @@ namespace Looloo.BlazorServer.Services
             {
                 foreach (var element in elements)
                 {
-                    var title = SeleniumExtensions.findElement(element, "div.title-container > a");
+                    var title = SeleniumExtensions.findElementByCss(element, "div.title-container > a");
                     //var title = element.FindElement(By.CssSelector("div.title-container > a"));
                     //var title = element.FindElement(By.CssSelector("div.title-container > a")).GetAttribute("text");
 
-                    var price = SeleniumExtensions.findElement(element, "span._text_16wi0_1._text--m_16wi0_23.sc-1fkdssq-0.bwsVzh");
+                    var price = SeleniumExtensions.findElementByCss(element, "span._text_16wi0_1._text--m_16wi0_23.sc-1fkdssq-0.bwsVzh");
                     //var price = element.FindElement(By.CssSelector("span._text_16wi0_1._text--m_16wi0_23.sc-1fkdssq-0.bwsVzh"));
 
-                    var size = SeleniumExtensions.findElement(element, "span._text_16wi0_1._text--m_16wi0_23.sc-1sjeki5-0.asqfi");
+                    var size = SeleniumExtensions.findElementByCss(element, "span._text_16wi0_1._text--m_16wi0_23.sc-1sjeki5-0.asqfi");
                     //var size = element.FindElement(By.CssSelector("span._text_16wi0_1._text--m_16wi0_23.sc-1sjeki5-0.asqfi")).Text;
 
-                    var sizePrice = SeleniumExtensions.findElement(element, "span._text_16wi0_1._text--m_16wi0_23.sc-1vpsrpe-2.sc-bnzhts-0.jixyGX.kUYwXM");
+                    var sizePrice = SeleniumExtensions.findElementByCss(element, "span._text_16wi0_1._text--m_16wi0_23.sc-1vpsrpe-2.sc-bnzhts-0.jixyGX.kUYwXM");
                     //var sizePrice = element.FindElement(By.CssSelector("span._text_16wi0_1._text--m_16wi0_23.sc-1vpsrpe-2.sc-bnzhts-0.jixyGX.kUYwXM")).Text;
 
                     //price = price.Replace("kr", "").Replace(",", ".").Trim();

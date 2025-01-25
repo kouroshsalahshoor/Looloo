@@ -1,7 +1,9 @@
 ﻿@page "/search"
+@attribute [StreamRendering]
 
 @inject CoopService _coopService
 @inject IcaService _icaService
+@inject WillysService _willysService
 
 <PageTitle>@_title</PageTitle>
 <h5 class="bg-primary text-white text-center p-2">@_title</h5>
@@ -10,7 +12,7 @@
     <input type="text" class="form-control" placeholder="Search" aria-label="Recipient's username" aria-describedby="button-addon2"
            @bind-value="_searchTerm" @bind-value:event="oninput">
     <button class="btn btn-warning text-light" type="button" id="button-addon2" @onclick="search" disabled="@(string.IsNullOrEmpty(_searchTerm) || _loading)">
-        <i class="bi bi-search"></i> 
+        <i class="bi bi-search"></i>
         @if (_loading)
         {
             <div class="spinner-border text-primary spinner-border-sm" role="status">
@@ -71,18 +73,31 @@
     {
         _loading = true;
 
-        await Task.Run(async () =>
+        if (string.IsNullOrEmpty(_searchTerm) == false)
         {
-            if (string.IsNullOrEmpty(_searchTerm) == false)
+            _items.Clear();
+
+            await Task.Run(async () =>
             {
                 var icaProducts = await _icaService.Search(_searchTerm);
+                _items = icaProducts.ToList();
+                await InvokeAsync(StateHasChanged);
+            });
+
+            await Task.Run(async () =>
+            {
                 var coopProducts = await _coopService.Search(_searchTerm);
+                _items = _items.Concat(coopProducts).ToList();
+                await InvokeAsync(StateHasChanged);
+            });
 
-                _items = icaProducts.Concat(coopProducts).ToList();
-            }
-
-            _loading = false;
-        });
-        
+            await Task.Run(async () =>
+            {
+                var willysProducts = await _willysService.Search(_searchTerm);
+                _items = _items.Concat(willysProducts).ToList();
+                _loading = false;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
     }
 }

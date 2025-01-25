@@ -4,6 +4,7 @@
 @inject CoopService _coopService
 @inject IcaService _icaService
 @inject WillysService _willysService
+@inject HemkopService _hemkopService
 
 <PageTitle>@_title</PageTitle>
 <h5 class="bg-primary text-white text-center p-2">@_title</h5>
@@ -62,7 +63,7 @@
     private string? _searchTerm = "ägg";
     private bool _loading = false;
     // private string? _searchTerm = string.Empty;
-    private List<ProductViewModel> _items = new();
+    private List<ProductModel> _items = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -79,22 +80,29 @@
 
             await Task.Run(async () =>
             {
-                var icaProducts = await _icaService.Search(_searchTerm);
-                _items = icaProducts.ToList();
+                var products = await _icaService.Search(_searchTerm);
+                _items = products.ToList();
                 await InvokeAsync(StateHasChanged);
             });
 
             await Task.Run(async () =>
             {
-                var coopProducts = await _coopService.Search(_searchTerm);
-                _items = _items.Concat(coopProducts).ToList();
+                var products = await _coopService.Search(_searchTerm);
+                _items = _items.Concat(products).ToList();
                 await InvokeAsync(StateHasChanged);
             });
 
             await Task.Run(async () =>
             {
-                var willysProducts = await _willysService.Search(_searchTerm);
-                _items = _items.Concat(willysProducts).ToList();
+                var products = await _hemkopService.Search(_searchTerm);
+                _items = _items.Concat(products).ToList();
+                await InvokeAsync(StateHasChanged);
+            });
+
+            await Task.Run(async () =>
+            {
+                var products = await _willysService.Search(_searchTerm);
+                _items = _items.Concat(products).ToList();
                 _loading = false;
                 await InvokeAsync(StateHasChanged);
             });

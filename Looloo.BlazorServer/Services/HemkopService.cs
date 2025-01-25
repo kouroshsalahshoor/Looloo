@@ -2,11 +2,10 @@
 using Looloo.BlazorServer.Utilities;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
 
 namespace Looloo.BlazorServer.Services
 {
-    public class WillysService
+    public class HemkopService
     {
         private ChromeDriver? _driver;
 
@@ -17,41 +16,21 @@ namespace Looloo.BlazorServer.Services
             _driver = new ChromeDriver(options);
             //_driver = _driver ?? new ChromeDriver();
 
-            _driver.Navigate().GoToUrl($"https://www.willys.se/sok?q={searchTerm.Trim()}");
-            //_driver!.Url = $"https://www.willys.se/sok?q={searchTerm.Trim()}";
+            _driver.Navigate().GoToUrl($"https://www.hemkop.se/sok?q={searchTerm.Trim()}");
             closeCookieWindow();
-
-            //https://www.selenium.dev/documentation/webdriver/waits/
-            //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(500);
-
-            //WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-            //wait.Until(d => revealed.Displayed);
-
-            //WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2))
-            //{
-            //    PollingInterval = TimeSpan.FromMilliseconds(300),
-            //};
-            //wait.IgnoreExceptionTypes(typeof(ElementNotInteractableException));
-
-            //wait.Until(d => {
-            //    revealed.SendKeys("Displayed");
-            //    return true;
-            //});
 
             var result = new List<ProductModel>();
 
-            //https://www.selenium.dev/documentation/webdriver/elements/locators/
-            //var elements = _driver.FindElements(By.CssSelector("#__next > div > div.sc-504002c3-3.ePiOKs > main > section > div > div.infinite-scroll-component__outerdiv > div > div > div"));
-            var elements = _driver.FindElements(By.XPath("//*[@id=\"__next\"]/div/div[4]/main/section/div/div[4]/div/div/div"));
+            var elements = _driver.FindElements(By.XPath("//*[@id=\"__next\"]/div[2]/div[2]/div/div/div/div[4]/div/div"));
             //var elements = _driver.FindElements(By.CssSelector("div.ProductTeaser-info"));
             if (elements is not null)
             {
                 foreach (var element in elements)
                 {
-                    var title = SeleniumExtensions.findElementByCss(element, "div.sc-7fa12c71-6.gMsSQO");
-                    var price = SeleniumExtensions.findElementByCss(element, "span.sc-49402b38-2.gjPFeg");
-                    var size = SeleniumExtensions.findElementByCss(element, "div.sc-7fa12c71-7.hzKTNx > span");
-                    var sizePrice = SeleniumExtensions.findElementByCss(element, "div.sc-7fa12c71-5.dbJhzZ > div");
+                    var title = SeleniumExtensions.findElementByCss(element, "div.sc-56f3097b-1.hkpGQL > a > p");
+                    var price = SeleniumExtensions.findElementByCss(element, "div.sc-94a42247-0.fepGlo > div > div > p > span:nth-child(1)");
+                    var size = SeleniumExtensions.findElementByCss(element, "div.sc-56f3097b-4.fWarFk > p > span:nth-child(2)");
+                    var sizePrice = SeleniumExtensions.findElementByCss(element, "div.sc-56f3097b-8.dNMbpO > div > p");
 
                     //price = price.Replace("kr", "").Replace(",", ".").Trim();
                     //sizePrice = sizePrice.Replace("(", "").Replace(")", "").Replace(",", ".").Trim();
@@ -64,7 +43,7 @@ namespace Looloo.BlazorServer.Services
                         Size = size == null ? string.Empty : size.Text,
                         SizePrice = sizePrice == null ? string.Empty : sizePrice.Text,
                         //SizePrice = decimal.Parse(sizePrice),
-                        Company = "Willys",
+                        Company = "Hemköp",
                     });
                 }
 

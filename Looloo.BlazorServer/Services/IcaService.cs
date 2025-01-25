@@ -34,7 +34,7 @@ namespace Looloo.BlazorServer.Services
 
         //}
 
-        public async Task<List<ProductViewModel>> Search(string searchTerm)
+        public async Task<List<ProductModel>> Search(string searchTerm)
         {
             ChromeOptions options = new ChromeOptions();
             options.AddArgument("--headless");
@@ -45,7 +45,7 @@ namespace Looloo.BlazorServer.Services
             //_driver.Url = $"https://handlaprivatkund.ica.se/stores/1003988/search?q={searchTerm.Trim()}";
             closeCookieWindow();
 
-            var result = new List<ProductViewModel>();
+            var result = new List<ProductModel>();
 
             var elements = _driver.FindElements(By.CssSelector("div.footer-container"));
             if (elements is not null)
@@ -70,7 +70,7 @@ namespace Looloo.BlazorServer.Services
 
                     if (string.IsNullOrEmpty(title?.GetAttribute("text")) == false)
                     {
-                        result.Add(new ProductViewModel
+                        result.Add(new ProductModel
                         {
                             Title = title == null ? string.Empty : title.GetAttribute("text"),
                             Price = price == null ? string.Empty : price.Text.Replace("kr", "").Replace(",", ".").Trim(),

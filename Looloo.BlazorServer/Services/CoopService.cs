@@ -10,7 +10,7 @@ namespace Looloo.BlazorServer.Services
     {
         private ChromeDriver? _driver;
 
-        public async Task<List<ProductViewModel>> Search(string searchTerm)
+        public async Task<List<ProductModel>> Search(string searchTerm)
         {
             ChromeOptions options = new ChromeOptions();
             options.AddArgument("--headless");
@@ -21,7 +21,7 @@ namespace Looloo.BlazorServer.Services
             //_driver.Url = $"https://www.coop.se/handla/sok/?q={searchTerm.Trim()}";
             closeCookieWindow();
 
-            var result = new List<ProductViewModel>();
+            var result = new List<ProductModel>();
 
             var elements = _driver.FindElements(By.CssSelector("div.ProductTeaser-info"));
             if (elements is not null)
@@ -37,7 +37,7 @@ namespace Looloo.BlazorServer.Services
                     //price = price.Replace("kr", "").Replace(",", ".").Trim();
                     //sizePrice = sizePrice.Replace("(", "").Replace(")", "").Replace(",", ".").Trim();
 
-                    result.Add(new ProductViewModel
+                    result.Add(new ProductModel
                     {
                         Title = title == null ? string.Empty : title.GetAttribute("text"),
                         Price = price == null ? string.Empty : price.Text,

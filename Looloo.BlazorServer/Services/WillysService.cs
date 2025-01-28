@@ -12,6 +12,8 @@ namespace Looloo.BlazorServer.Services
 
         public async Task<List<ProductModel>> Search(string searchTerm)
         {
+            var result = new List<ProductModel>();
+
             ChromeOptions options = new ChromeOptions();
             options.AddArgument("--headless");
             _driver = new ChromeDriver(options);
@@ -37,8 +39,6 @@ namespace Looloo.BlazorServer.Services
             //    revealed.SendKeys("Displayed");
             //    return true;
             //});
-
-            var result = new List<ProductModel>();
 
             //https://www.selenium.dev/documentation/webdriver/elements/locators/
             //var elements = _driver.FindElements(By.CssSelector("#__next > div > div.sc-504002c3-3.ePiOKs > main > section > div > div.infinite-scroll-component__outerdiv > div > div > div"));

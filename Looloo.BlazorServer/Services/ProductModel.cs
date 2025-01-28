@@ -10,6 +10,7 @@
         public string? SizePrice { get; set; }
         //public decimal SizePrice { get; set; }
         public string? Company { get; set; }
+        public string? ImageUrl { get; set; }
 
     }
 }

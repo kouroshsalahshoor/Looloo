@@ -36,6 +36,8 @@ namespace Looloo.BlazorServer.Services
 
         public async Task<List<ProductModel>> Search(string searchTerm)
         {
+            var result = new List<ProductModel>();
+
             ChromeOptions options = new ChromeOptions();
             options.AddArgument("--headless");
             _driver = new ChromeDriver(options);
@@ -44,8 +46,6 @@ namespace Looloo.BlazorServer.Services
             _driver.Navigate().GoToUrl($"https://handlaprivatkund.ica.se/stores/1003988/search?q={searchTerm.Trim()}");
             //_driver.Url = $"https://handlaprivatkund.ica.se/stores/1003988/search?q={searchTerm.Trim()}";
             closeCookieWindow();
-
-            var result = new List<ProductModel>();
 
             var elements = _driver.FindElements(By.CssSelector("div.footer-container"));
             if (elements is not null)

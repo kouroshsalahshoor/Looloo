@@ -1,7 +1,7 @@
 using Looloo.BlazorServer.Components;
 using Looloo.BlazorServer.Components.Account;
 using Looloo.BlazorServer.Data;
-using Looloo.BlazorServer.Services;
+using Looloo.BlazorServer.Services.Food;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

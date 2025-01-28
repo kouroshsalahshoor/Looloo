@@ -1,4 +1,4 @@
-﻿namespace Looloo.BlazorServer.Services
+﻿namespace Looloo.BlazorServer.Services.Food
 {
     public class ProductModel
     {

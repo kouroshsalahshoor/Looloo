@@ -5,6 +5,7 @@
 @inject IcaService _icaService
 @inject WillysService _willysService
 @inject HemkopService _hemkopService
+@inject MathemService _mathemService
 
 <PageTitle>@_title</PageTitle>
 <h5 class="bg-primary text-white text-center p-2">@_title</h5>
@@ -95,6 +96,13 @@
             await Task.Run(async () =>
             {
                 var products = await _hemkopService.Search(_searchTerm);
+                _items = _items.Concat(products).ToList();
+                await InvokeAsync(StateHasChanged);
+            });
+
+            await Task.Run(async () =>
+            {
+                var products = await _mathemService.Search(_searchTerm);
                 _items = _items.Concat(products).ToList();
                 await InvokeAsync(StateHasChanged);
             });

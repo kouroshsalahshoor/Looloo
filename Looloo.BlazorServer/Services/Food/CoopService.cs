@@ -3,9 +3,10 @@ using Looloo.BlazorServer.Utilities;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
-namespace Looloo.BlazorServer.Services
+namespace Looloo.BlazorServer.Services.Food
 {
-    public class MathemService
+    //public class CoopService : IDisposable
+    public class CoopService
     {
         private ChromeDriver? _driver;
 
@@ -18,35 +19,33 @@ namespace Looloo.BlazorServer.Services
             _driver = new ChromeDriver(options);
             //_driver = _driver ?? new ChromeDriver();
 
-            _driver.Navigate().GoToUrl($"https://www.mathem.se/se/search/products/?q={searchTerm.Trim()}");
-
+            _driver.Navigate().GoToUrl($"https://www.coop.se/handla/sok/?q={searchTerm.Trim()}");
+            //_driver.Url = $"https://www.coop.se/handla/sok/?q={searchTerm.Trim()}";
             closeCookieWindow();
 
-            var elements = _driver.FindElements(By.CssSelector("div.k-grid.k-grid--row-gap-spacing-4 > div > article"));
+            var elements = _driver.FindElements(By.CssSelector("div.ProductTeaser-info"));
             if (elements is not null)
             {
 
                 foreach (var element in elements)
                 {
-                    var title = SeleniumExtensions.findElementByCss(element, "div.k-flex.k-flex--gap-0.k-flex--direction-column > a > h2");
-                    var price = SeleniumExtensions.findElementByCss(element, "div.k-flex.k-align-items-flex-start.k-flex--gap-0.k-flex--direction-column > span");
-                    var size = SeleniumExtensions.findElementByCss(element, "div.k-flex.k-flex--gap-0.k-flex--direction-column > span");
-                    var sizePrice = SeleniumExtensions.findElementByCss(element, "div.k-flex.k-align-items-flex-start.k-flex--gap-0.k-flex--direction-column > p");
-                    var img = SeleniumExtensions.findElementByCss(element, "div.k-aspect-ratio.k-aspect-ratio--1-1.styles_ProductTileImageBox__5rE_H.k-border-radius-small.k-position-relative > img");
+                    var title = SeleniumExtensions.findElementByCss(element, "div.ProductTeaser-headingContainer > p > a");
+                    var price = SeleniumExtensions.findElementByCss(element, "div.ProductTeaser-detailsContainer > div.SnZ2rtnf.sJx8F6kR.ProductTeaser-pricesContainer > span > span:nth-child(1)");
+                    var size = SeleniumExtensions.findElementByCss(element, "div.ProductTeaser-headingContainer > div > div");
+                    var sizePrice = SeleniumExtensions.findElementByCss(element, "div.ProductTeaser-detailsContainer > div.ProductTeaser-details > div:nth-child(2)");
 
                     //price = price.Replace("kr", "").Replace(",", ".").Trim();
                     //sizePrice = sizePrice.Replace("(", "").Replace(")", "").Replace(",", ".").Trim();
 
                     result.Add(new ProductModel
                     {
-                        Title = title == null ? string.Empty : title.Text,
+                        Title = title == null ? string.Empty : title.GetAttribute("text"),
                         Price = price == null ? string.Empty : price.Text,
                         //Price = decimal.Parse(price),
                         Size = size == null ? string.Empty : size.Text,
                         SizePrice = sizePrice == null ? string.Empty : sizePrice.Text,
                         //SizePrice = decimal.Parse(sizePrice),
-                        Company = "Mathem",
-                        ImageUrl = img == null ? string.Empty : img.GetAttribute("src")
+                        Company = "Coop",
                     });
                 }
 
@@ -93,11 +92,19 @@ namespace Looloo.BlazorServer.Services
             {
                 Thread.Sleep(1000);
 
-                var cookieButton = _driver?.FindElement(By.XPath("//*[@id=\"__next\"]/div[1]/div/div[3]/div/div/button[1]"));
+                var cookieButton = _driver?.FindElement(By.XPath(".//a[contains(@class, 'cmpboxbtn cmpboxbtnyes cmptxt_btn_yes')]"));
                 if (cookieButton is not null)
                 {
                     cookieButton.Click();
                 }
+
+                //Thread.Sleep(1000);
+
+                //var loginButton = _driver?.FindElement(By.XPath(".//button[contains(@class, 'gUGSFhfR CkqGWkRo ucdesrxw qfkHWAKt')]"));
+                //if (loginButton is not null)
+                //{
+                //    loginButton.Click();
+                //}
             }
             catch (Exception e)
             {

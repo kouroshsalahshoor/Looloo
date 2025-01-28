@@ -3,7 +3,7 @@ using Looloo.BlazorServer.Utilities;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
-namespace Looloo.BlazorServer.Services
+namespace Looloo.BlazorServer.Services.Food
 {
     //https://www.toolsqa.com/selenium-c-sharp/
     //https://toolsqa.com/selenium-webdriver/c-sharp/iwebdriver-browser-commands-in-c-sharp/

@@ -1,5 +1,6 @@
 ﻿@page "/"
-@inject WillysService _service
+@inject CoopService _service
+@attribute [StreamRendering]
 
 <PageTitle>Home</PageTitle>
 
@@ -13,13 +14,15 @@
                     <div class="card shadow-sm">
                         <img src="@item.ImageUrl" class="img-thumbnail" height="100">
                         <div class="card-body">
-                            <p class="card-text">@item.Title</p>
+                            <p class="card-text text-center">@item.Title</p>
+                            <p class="card-text text-center fw-bold">@item.Price</p>
+                            <p class="card-text text-center text-body-secondary">@item.SizePrice @item.Size</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                    @* <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> *@
+                                    @* <button type="button" class="btn btn-sm btn-outline-secondary">View</button> *@
                                 </div>
-                                <small class="text-body-secondary">@item.Price</small>
+                                <img src="images/companies/@(item.Company).png" class="img-thumbnail" width="70">
+                                @* <small class="text-body-secondary">@item.Company</small> *@
                             </div>
                         </div>
                     </div>

@@ -6,7 +6,7 @@ using OpenQA.Selenium.Support.UI;
 
 namespace Looloo.BlazorServer.Services.Food
 {
-    public class WillysService
+    public class Servicex
     {
         private ChromeDriver? _driver;
 
@@ -14,15 +14,36 @@ namespace Looloo.BlazorServer.Services.Food
         {
             var result = new List<ProductModel>();
 
-            ChromeOptions options = new ChromeOptions();
-            options.AddArgument("--headless");
-            _driver = new ChromeDriver(options);
-            //_driver = _driver ?? new ChromeDriver();
+            //ChromeOptions options = new ChromeOptions();
+            //options.AddArgument("--headless");
+            //_driver = new ChromeDriver(options);
+            _driver = _driver ?? new ChromeDriver();
 
             _driver.Navigate().GoToUrl($"https://www.willys.se/sok?q={searchTerm.Trim()}");
+            //_driver!.Url = $"https://www.willys.se/sok?q={searchTerm.Trim()}";
             closeCookieWindow();
 
+            //https://www.selenium.dev/documentation/webdriver/waits/
+            //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(500);
+
+            //WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
+            //wait.Until(d => revealed.Displayed);
+
+            //WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2))
+            //{
+            //    PollingInterval = TimeSpan.FromMilliseconds(300),
+            //};
+            //wait.IgnoreExceptionTypes(typeof(ElementNotInteractableException));
+
+            //wait.Until(d => {
+            //    revealed.SendKeys("Displayed");
+            //    return true;
+            //});
+
+            //https://www.selenium.dev/documentation/webdriver/elements/locators/
+            //var elements = _driver.FindElements(By.CssSelector("#__next > div > div.sc-504002c3-3.ePiOKs > main > section > div > div.infinite-scroll-component__outerdiv > div > div > div"));
             var elements = _driver.FindElements(By.XPath("//*[@id=\"__next\"]/div/div[4]/main/section/div/div[4]/div/div[1]/div"));
+            //var elements = _driver.FindElements(By.CssSelector("div.ProductTeaser-info"));
             if (elements is not null)
             {
                 foreach (var element in elements)
@@ -56,6 +77,36 @@ namespace Looloo.BlazorServer.Services.Food
             return result;
         }
 
+        public async Task<List<Category>> GetCategories()
+        {
+            _driver = _driver ?? new ChromeDriver();
+
+            _driver.Url = "https://handlaprivatkund.ica.se/stores/1003988/categories?source=navigation";
+            closeCookieWindow();
+
+            var result = new List<Category>();
+
+            //https://toolsqa.com/selenium-webdriver/c-sharp/findelement-and-findelements-commands-in-c/
+            var elements = _driver.FindElements(By.CssSelector("#product-page > div > div._grid-item-12_tilop_45._grid-item-lg-2_tilop_249 > div.sc-1hfavqh-0.bhvoGf > ul > li > a"));
+            //var categories = _driver.FindElements(By.CssSelector("#nav-menu > li > a > div > span"));
+            if (elements is not null)
+            {
+
+                foreach (var element in elements)
+                {
+                    result.Add(new Category
+                    {
+                        Name = element.GetAttribute("text")
+                        //Title = element.Text
+                    });
+                }
+            }
+
+            _driver.Quit();
+
+            return result;
+        }
+
         private void closeCookieWindow()
         {
             try
@@ -71,6 +122,14 @@ namespace Looloo.BlazorServer.Services.Food
                 {
                     cookieButton.Click();
                 }
+
+                //Thread.Sleep(1000);
+
+                //var loginButton = _driver?.FindElement(By.XPath(".//button[contains(@class, 'gUGSFhfR CkqGWkRo ucdesrxw qfkHWAKt')]"));
+                //if (loginButton is not null)
+                //{
+                //    loginButton.Click();
+                //}
             }
             catch (Exception e)
             {

@@ -25,39 +25,32 @@
     </button>
 </div>
 
-<table class="table table-sm table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Size</th>
-            <th>SizePrice</th>
-            <th>Company</th>
-            @* <th class="text-center" style="width:180px;">
-                <NavLink class="btn btn-sm btn-primary" href="/person/create">Create</NavLink>
-            </th> *@
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in _items)
-        {
-            <tr>
-                <td>@item.Id</td>
-                <td>@item.Title</td>
-                <td>@item.Price</td>
-                <td>@item.Size</td>
-                <td>@item.SizePrice</td>
-                <td>@item.Company</td>
-                @* <td class="text-center">
-                        <NavLink class="btn btn-sm btn-info" href="@GetDetailsUrl(item.Id)">Details</NavLink>
-                        <NavLink class="btn btn-sm btn-warning" href="@GetEditUrl(item.Id)">Edit</NavLink>
-                        <button class="btn btn-sm btn-danger" @onclick="@(() => HandleDelete(item))">Delete</button>
-                    </td> *@
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="album py-1 bg-body-tertiary">
+    <div class="container-fluid">
+
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-6 g-3">
+            @foreach (var item in _items)
+            {
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <img src="@item.ImageUrl" class="img-thumbnail" height="100">
+                        <div class="card-body">
+                            <p class="card-text">@item.Title</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    @* <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> *@
+                                </div>
+                                <small class="text-body-secondary">@item.Price</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
 
 @code {
     private string _title = "Search";

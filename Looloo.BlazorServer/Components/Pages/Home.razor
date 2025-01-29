@@ -1,15 +1,40 @@
 ﻿@page "/"
-@inject MathemService _service
+@inject WillysService _service
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="album py-1 bg-body-tertiary">
+    <div class="container-fluid">
 
-Welcome to your new app.
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-6 g-3">
+            @foreach (var item in _items)
+            {
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <img src="@item.ImageUrl" class="img-thumbnail" height="100">
+                        <div class="card-body">
+                            <p class="card-text">@item.Title</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    @* <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> *@
+                                </div>
+                                <small class="text-body-secondary">@item.Price</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
 
 @code {
+    private List<ProductModel> _items = new();
+
     protected override async Task OnInitializedAsync()
     {
-        var products = await _service.Search("ägg");
+        _items = await _service.Search("ägg");
     }
 }

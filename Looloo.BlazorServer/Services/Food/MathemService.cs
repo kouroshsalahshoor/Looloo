@@ -18,11 +18,12 @@ namespace Looloo.BlazorServer.Services.Food
             _driver = new ChromeDriver(options);
             //_driver = _driver ?? new ChromeDriver();
 
-            _driver.Navigate().GoToUrl($"https://www.mathem.se/se/search/products/?q={searchTerm.Trim()}");
+            var searchUrl = $"https://www.mathem.se/se/search/products/?q={searchTerm.Trim()}";
+            _driver.Navigate().GoToUrl(searchUrl);
 
             closeCookieWindow();
 
-            var elements = _driver.FindElements(By.CssSelector("div.k-grid.k-grid--row-gap-spacing-4 > div > article"));
+            var elements = _driver.FindElements(By.XPath("//*[@id=\"main-content\"]/div/div/div/div[3]/div"));
             if (elements is not null)
             {
 
@@ -46,7 +47,8 @@ namespace Looloo.BlazorServer.Services.Food
                         SizePrice = sizePrice == null ? string.Empty : sizePrice.Text,
                         //SizePrice = decimal.Parse(sizePrice),
                         Company = "Mathem",
-                        ImageUrl = img == null ? string.Empty : img.GetAttribute("src")
+                        ImageUrl = img == null ? string.Empty : img.GetAttribute("src"),
+                        SearchUrl = searchUrl
                     });
                 }
 
@@ -91,6 +93,9 @@ namespace Looloo.BlazorServer.Services.Food
         {
             try
             {
+                // Maximize the current window
+                _driver?.Manage().Window.Maximize();
+
                 Thread.Sleep(1000);
 
                 var cookieButton = _driver?.FindElement(By.XPath("//*[@id=\"__next\"]/div[1]/div/div[3]/div/div/button[1]"));

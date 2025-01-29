@@ -11,6 +11,7 @@
         //public decimal SizePrice { get; set; }
         public string? Company { get; set; }
         public string? ImageUrl { get; set; }
+        public string? SearchUrl { get; set; }
 
     }
 }

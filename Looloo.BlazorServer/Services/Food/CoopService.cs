@@ -19,7 +19,8 @@ namespace Looloo.BlazorServer.Services.Food
             _driver = new ChromeDriver(options);
             //_driver = _driver ?? new ChromeDriver();
 
-            _driver.Navigate().GoToUrl($"https://www.coop.se/handla/sok/?q={searchTerm.Trim()}");
+            var searchUrl = $"https://www.coop.se/sok/?q={searchTerm.Trim()}";
+            _driver.Navigate().GoToUrl(searchUrl);
             closeCookieWindow();
 
             var elements = _driver.FindElements(By.XPath("//*[@id=\"pageContent\"]/div/div[5]/div/div/div"));
@@ -45,7 +46,8 @@ namespace Looloo.BlazorServer.Services.Food
                         SizePrice = sizePrice == null ? string.Empty : sizePrice.Text,
                         //SizePrice = decimal.Parse(sizePrice),
                         Company = "Coop",
-                        ImageUrl = imageUrl == null ? string.Empty : imageUrl.GetAttribute("src")
+                        ImageUrl = imageUrl == null ? string.Empty : imageUrl.GetAttribute("src"),
+                        SearchUrl = searchUrl
                     });
                 }
 
@@ -60,6 +62,8 @@ namespace Looloo.BlazorServer.Services.Food
         {
             try
             {
+                _driver?.Manage().Window.Maximize();
+
                 Thread.Sleep(1000);
 
                 var cookieButton = _driver?.FindElement(By.XPath(".//a[contains(@class, 'cmpboxbtn cmpboxbtnyes cmptxt_btn_yes')]"));

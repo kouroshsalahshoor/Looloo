@@ -1,0 +1,33 @@
+﻿<div class="album py-1 bg-body-tertiary">
+    <div class="container-fluid">
+
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-6 g-3">
+            @foreach (var item in Items)
+            {
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <img src="@item.ImageUrl" class="img-thumbnail" height="100" style="min-height:100px">
+                        <div class="card-body">
+                            <p class="card-text text-center">@item.Title</p>
+                            <p class="card-text text-center fw-bold">@item.Price</p>
+                            <p class="card-text text-center text-body-secondary">@item.SizePrice @item.Size</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a href="@item.SearchUrl" target="_blank" class="btn btn-sm btn-outline-primary">View</a>
+                                </div>
+                                <img src="images/companies/@(item.Company!.ToLower()).png" class="img-thumbnail" width="70">
+                                @* <small class="text-body-secondary">@item.Company</small> *@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<ProductModel> Items { get; set; } = new();
+}

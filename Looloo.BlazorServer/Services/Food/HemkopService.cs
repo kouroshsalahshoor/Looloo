@@ -16,13 +16,13 @@ namespace Looloo.BlazorServer.Services.Food
             _driver = new ChromeDriver(options);
             //_driver = _driver ?? new ChromeDriver();
 
-            _driver.Navigate().GoToUrl($"https://www.hemkop.se/sok?q={searchTerm.Trim()}");
+            var searchUrl = $"https://www.hemkop.se/sok?q={searchTerm.Trim()}";
+            _driver.Navigate().GoToUrl(searchUrl);
             closeCookieWindow();
 
             var result = new List<ProductModel>();
 
-            var elements = _driver.FindElements(By.XPath("//*[@id=\"__next\"]/div[2]/div[2]/div/div/div/div[4]/div/div"));
-            //var elements = _driver.FindElements(By.CssSelector("div.ProductTeaser-info"));
+            var elements = _driver.FindElements(By.XPath("//*[@id=\"__next\"]/div[2]/div[2]/div/div/div/div[4]/div"));
             if (elements is not null)
             {
                 foreach (var element in elements)
@@ -31,6 +31,7 @@ namespace Looloo.BlazorServer.Services.Food
                     var price = SeleniumExtensions.findElementByCss(element, "div.sc-94a42247-0.fepGlo > div > div > p > span:nth-child(1)");
                     var size = SeleniumExtensions.findElementByCss(element, "div.sc-56f3097b-4.fWarFk > p > span:nth-child(2)");
                     var sizePrice = SeleniumExtensions.findElementByCss(element, "div.sc-56f3097b-8.dNMbpO > div > p");
+                    var imageUrl = SeleniumExtensions.findElementByCss(element, "div.sc-82e986e3-0.eviaLe > a > div > img");
 
                     //price = price.Replace("kr", "").Replace(",", ".").Trim();
                     //sizePrice = sizePrice.Replace("(", "").Replace(")", "").Replace(",", ".").Trim();
@@ -44,39 +45,11 @@ namespace Looloo.BlazorServer.Services.Food
                         SizePrice = sizePrice == null ? string.Empty : sizePrice.Text,
                         //SizePrice = decimal.Parse(sizePrice),
                         Company = "Hemköp",
+                        ImageUrl = imageUrl == null ? string.Empty : imageUrl.GetAttribute("src"),
+                        SearchUrl = searchUrl
                     });
                 }
 
-            }
-
-            _driver.Quit();
-
-            return result;
-        }
-
-        public async Task<List<Category>> GetCategories()
-        {
-            _driver = _driver ?? new ChromeDriver();
-
-            _driver.Url = "https://handlaprivatkund.ica.se/stores/1003988/categories?source=navigation";
-            closeCookieWindow();
-
-            var result = new List<Category>();
-
-            //https://toolsqa.com/selenium-webdriver/c-sharp/findelement-and-findelements-commands-in-c/
-            var elements = _driver.FindElements(By.CssSelector("#product-page > div > div._grid-item-12_tilop_45._grid-item-lg-2_tilop_249 > div.sc-1hfavqh-0.bhvoGf > ul > li > a"));
-            //var categories = _driver.FindElements(By.CssSelector("#nav-menu > li > a > div > span"));
-            if (elements is not null)
-            {
-
-                foreach (var element in elements)
-                {
-                    result.Add(new Category
-                    {
-                        Name = element.GetAttribute("text")
-                        //Title = element.Text
-                    });
-                }
             }
 
             _driver.Quit();
@@ -88,9 +61,8 @@ namespace Looloo.BlazorServer.Services.Food
         {
             try
             {
-                //Thread.Sleep(1000);
                 // Maximize the current window
-                //_driver?.Manage().Window.Maximize();
+                _driver?.Manage().Window.Maximize();
 
                 Thread.Sleep(1000);
 

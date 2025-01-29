@@ -6,9 +6,35 @@ using OpenQA.Selenium.Support.UI;
 
 namespace Looloo.BlazorServer.Services.Food
 {
+    //https://www.toolsqa.com/selenium-c-sharp/
+    //https://toolsqa.com/selenium-webdriver/c-sharp/iwebdriver-browser-commands-in-c-sharp/
+    //public class IcaService : IDisposable
     public class Servicex
     {
         private ChromeDriver? _driver;
+
+        //public IcaService()
+        //{
+        //    _driver = new ChromeDriver();
+
+        //    //_driver.Url = "https://handlaprivatkund.ica.se/stores/1003988/categories?source=navigation";
+        //    ////string Title = driver.Title;
+        //    ////Console.WriteLine("Title of the page is : " + Title);
+
+        //    //////Mazimize current window
+        //    ////driver.Manage().Window.Maximize();
+
+        //    //////Delay execution for 5 seconds to view the maximize operation
+        //    ////Thread.Sleep(5000);
+
+        //    //closeCookieWindow();
+
+        //    //https://toolsqa.com/selenium-webdriver/c-sharp/webelement-commands-in-c/
+        //    //bool staus = driver.FindElement(By.Id("UserName")).Displayed;
+        //    //bool staus = driver.FindElement(By.Id("UserName")).Enabled;
+        //    //bool staus = driver.FindElement(By.Id("UserName")).Selected;
+
+        //}
 
         public async Task<List<ProductModel>> Search(string searchTerm)
         {
@@ -135,5 +161,13 @@ namespace Looloo.BlazorServer.Services.Food
             {
             }
         }
+
+        //public void Dispose()
+        //{
+        //    if (_driver is not null)
+        //    {
+        //        _driver?.Quit();
+        //    }
+        //}
     }
 }

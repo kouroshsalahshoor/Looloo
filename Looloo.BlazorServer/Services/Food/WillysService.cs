@@ -19,7 +19,9 @@ namespace Looloo.BlazorServer.Services.Food
             _driver = new ChromeDriver(options);
             //_driver = _driver ?? new ChromeDriver();
 
-            _driver.Navigate().GoToUrl($"https://www.willys.se/sok?q={searchTerm.Trim()}");
+            var searchUrl = $"https://www.willys.se/sok?q={searchTerm.Trim()}";
+
+            _driver.Navigate().GoToUrl(searchUrl);
             closeCookieWindow();
 
             var elements = _driver.FindElements(By.XPath("//*[@id=\"__next\"]/div/div[4]/main/section/div/div[4]/div/div[1]/div"));
@@ -45,7 +47,8 @@ namespace Looloo.BlazorServer.Services.Food
                         SizePrice = sizePrice == null ? string.Empty : sizePrice.Text,
                         //SizePrice = decimal.Parse(sizePrice),
                         Company = "Willys",
-                        ImageUrl = img == null ? string.Empty : img.GetAttribute("src")
+                        ImageUrl = img == null ? string.Empty : img.GetAttribute("src"),
+                        SearchUrl = searchUrl
                     });
                 }
 
@@ -60,9 +63,8 @@ namespace Looloo.BlazorServer.Services.Food
         {
             try
             {
-                //Thread.Sleep(1000);
                 // Maximize the current window
-                //_driver?.Manage().Window.Maximize();
+                _driver?.Manage().Window.Maximize();
 
                 Thread.Sleep(1000);
 

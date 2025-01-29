@@ -17,7 +17,7 @@ namespace Looloo.BlazorServer.Services.Food
             _driver = new ChromeDriver(options);
             //_driver = _driver ?? new ChromeDriver();
 
-            var searchUrl = $"https://handlaprivatkund.ica.se/stores/1003988/categories?source=navigation";
+            var searchUrl = $"https://handlaprivatkund.ica.se/stores/1003988/search?q={searchTerm.Trim()}";
             _driver.Navigate().GoToUrl(searchUrl);
             closeCookieWindow();
 

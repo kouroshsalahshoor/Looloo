@@ -6,13 +6,15 @@
 @inject WillysService _willysService
 @inject HemkopService _hemkopService
 @inject MathemService _mathemService
+@inject CityGrossService _cityGrossService
 
 <PageTitle>@_title</PageTitle>
 <h5 class="bg-primary text-white text-center p-2">@_title</h5>
 
 <div class="input-group mb-3">
     <input type="text" class="form-control" placeholder="Search" aria-label="Recipient's username" aria-describedby="button-addon2"
-           @bind-value="_searchTerm" @bind-value:event="oninput">
+           @bind-value="_searchTerm" @bind-value:event="oninput"
+           @onkeydown="@enter">
     <button class="btn btn-warning text-light" type="button" id="button-addon2" @onclick="search" disabled="@(string.IsNullOrEmpty(_searchTerm) || _loading)">
         <i class="bi bi-search"></i>
         @if (_loading)
@@ -77,11 +79,26 @@
 
             await Task.Run(async () =>
             {
+                var products = await _cityGrossService.Search(_searchTerm);
+                _items = _items.Concat(products).ToList();
+                await InvokeAsync(StateHasChanged);
+            });
+
+            await Task.Run(async () =>
+            {
                 var products = await _willysService.Search(_searchTerm);
                 _items = _items.Concat(products).ToList();
                 _loading = false;
                 await InvokeAsync(StateHasChanged);
             });
+        }
+    }
+
+    private async Task enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await search();
         }
     }
 }

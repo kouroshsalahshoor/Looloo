@@ -69,6 +69,7 @@ builder.Services.AddScoped<CoopService>();
 builder.Services.AddScoped<WillysService>();
 builder.Services.AddScoped<HemkopService>();
 builder.Services.AddScoped<MathemService>();
+builder.Services.AddScoped<CityGrossService>();
 
 var app = builder.Build();
 

@@ -1,5 +1,5 @@
 ﻿@page "/"
-@inject MathemService _service
+@* @inject CityGrossService _service *@
 @attribute [StreamRendering]
 
 <PageTitle>Home</PageTitle>
@@ -11,6 +11,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _items = await _service.Search("ägg");
+        // _items = await _service.Search("ägg");
     }
 }
